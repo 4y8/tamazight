@@ -1,0 +1,9 @@
+(ocamllex
+ (modules lexer))
+(menhir
+ (modules parser)
+ (flags --explain --dump --unused-token DUMMY)
+ (infer true))
+(executable
+ (name tamazight)
+ (promote (until-clean)))
