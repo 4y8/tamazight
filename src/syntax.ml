@@ -1,23 +1,24 @@
-type ty = TInt | TArr of ty
+type ty = TFile | TInt | TArr of ty
 
 type uop = Not
 type bop = And | Or | Pls | Min | Mul | Div | Eq | Neq | Gt | Ge | Lt | Le
 
-type expr
-  = Bop of bop * expr * expr
-  | Uop of uop * expr
-  | Acc of string * expr
+type 'a expr
+  = Bop of bop * 'a expr * 'a expr
+  | Uop of uop * 'a expr
+  | Acc of 'a * 'a expr
   | Lit of int
-  | Var of string
-  | Cal of string * expr list
+  | Var of 'a
+  | Cal of 'a * 'a expr list
 
-type stmt
-  = If of expr * stmt list * stmt list
-  | While of expr * stmt list
-  | Decl of string * expr
-  | Expr of expr
-  | AAss of string * expr * expr
-  | SAss of string * expr
-  | Ret of expr
+type 'a stmt
+  = If of 'a expr * 'a stmt list * 'a stmt list
+  | While of 'a expr * 'a stmt list
+  | Decl of 'a * 'a expr
+  | Expr of 'a expr
+  | AAss of 'a * 'a expr * 'a expr
+  | SAss of 'a * 'a expr
+  | Ret of 'a expr
 
-type fun_decl = { f : string ; x : (string * ty) list ; body : stmt list }
+type fun_decl =
+  { f : string ; x : (string * ty) list ; ret : ty; body : string stmt list }

@@ -2,7 +2,7 @@
     open Syntax
 %}
 
-%token FUN IF ELSE WHILE RETURN TINT
+%token FUN IF ELSE WHILE RETURN TINT FILE
 %token WAL ASS EQ GT GE LT LE OR AND PLUS MINUS TIMES DIV NOT DIFF
 %token DCOL SCOL COMMA LPAR RPAR LCUR RCUR LSQU RSQU
 %token <string> IDENT
@@ -49,15 +49,16 @@ stmt:
 
 ty:
   | TINT { TInt }
+  | FILE { TFile }
   | LSQU t = ty RSQU { TArr t }
 ;
 
 formal: x = IDENT DCOL t = ty { (x, t) } ;
 
 func:
-    FUN f = IDENT LPAR x = separated_list(COMMA, formal) RPAR
+    FUN f = IDENT LPAR x = separated_list(COMMA, formal) RPAR DCOL ret = ty
       LCUR body = stmt* RCUR
-    { {f; x; body} }
+    { {f; x; ret; body} }
 ;
 
 file: p = func* EOF { p } ;

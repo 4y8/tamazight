@@ -41,6 +41,7 @@ rule lexer = parse
   | "while" { WHILE }
   | "return" { RETURN }
   | "int" { TINT }
+  | "file" { FILE }
   | ident as s { IDENT s }
 
   | digit+ as n { INT (int_of_string n) }
