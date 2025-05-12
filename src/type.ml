@@ -33,6 +33,7 @@ let rec translate_expr fctx vctx =
 
 let rec translate_blk ret n fctx vctx =
   let go = translate_blk ret n fctx vctx in function
+    | [] -> []
     | If (e, b, b') :: tl ->
       let e, t = translate_expr fctx vctx e in
       assert (t = TInt);
