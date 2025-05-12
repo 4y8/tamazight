@@ -3,7 +3,7 @@ open Syntax
 module SMap = Map.Make(String)
 
 let rec translate_expr fctx vctx =
-  let go = translate_expr fctx vctx in function
+  let go x = translate_expr fctx vctx x in function
     | Bop (op, e, e') ->
       let e, t = go e in
       let e', t' = go e' in
@@ -32,7 +32,8 @@ let rec translate_expr fctx vctx =
       Cal (n, e), ret
 
 let rec translate_blk ret n fctx vctx =
-  let go = translate_blk ret n fctx vctx in function
+  let go x = translate_blk ret n fctx vctx x in
+  function
     | [] -> []
     | If (e, b, b') :: tl ->
       let e, t = translate_expr fctx vctx e in
@@ -66,3 +67,14 @@ let rec translate_blk ret n fctx vctx =
       let e, t = translate_expr fctx vctx e in
       assert (t = ret);
       Ret e :: go tl
+
+let translate_fun fctx { x ; ret ; body ; _ } =
+  let n = List.length x in
+  let vctx = SMap.of_list (List.mapi (fun i (x, t) -> (x, (t, i))) x) in
+  translate_blk ret n fctx vctx body
+
+let rec translate_program fctx n = function
+  | [] -> []
+  | { f ; x ; ret ; _} as hd :: tl ->
+    let fctx = SMap.add f (List.map snd x, ret, n) fctx in
+    translate_fun fctx hd :: translate_program fctx (n + 1) tl

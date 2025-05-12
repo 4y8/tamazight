@@ -15,7 +15,7 @@ let free_reg fregs n =
     fregs.(n) <- 0
 
 let rec compile_expr fregs pc =
-  let go = compile_expr fregs pc in function
+  let go x = compile_expr fregs pc x in function
   | Bop (Lt, e, e') -> go (Bop (Gt, e', e))
   | Bop (Le, e, e') -> go (Bop (Lt, e', e))
   | Bop (Neq, e, e') -> go (Uop (Not, Bop (Eq, e, e')))
@@ -102,3 +102,6 @@ and compile_stmt fregs pc = function
     free_reg fregs src1;
     incr pc;
     ce @ [Op { op = "OP_RET" ; dst = 0 ; src1 ; src2 = 0}]
+
+let compile_program =
+  List.map (fun b -> compile_blk (Array.make 256 0) (ref 0) b)
