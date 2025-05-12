@@ -42,7 +42,13 @@ rule lexer = parse
   | "return" { RETURN }
   | "int" { TINT }
   | "file" { FILE }
+  | "unit" { UNIT }
   | ident as s { IDENT s }
+
+  | "'" [^ '\\'] as c "'" { INT (Char.code c.[0]) }
+  | "'\\n'" { INT (Char.code '\n') }
+  | "'\\t'" { INT (Char.code '\t') }
+  | "\"" ([^'\\''"']* as s) "\"" { STRING s }
 
   | digit+ as n { INT (int_of_string n) }
 

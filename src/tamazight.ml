@@ -1,6 +1,9 @@
-let stdlib = Type.SMap.empty
-let n_stdlib = 0
+open Syntax
 
+let stdlib = Type.SMap.of_list
+    ["zeros", ([TInt], TArr (TInt), 0);
+     "print_string", ([TArr (TInt)], TUnit, 1)]
+let n_stdlib = 2
 
 let read_file f =
   let ic = open_in f in

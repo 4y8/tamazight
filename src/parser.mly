@@ -2,11 +2,12 @@
     open Syntax
 %}
 
-%token FUN IF ELSE WHILE RETURN TINT FILE
+%token FUN IF ELSE WHILE RETURN TINT FILE UNIT
 %token WAL ASS EQ GT GE LT LE OR AND PLUS MINUS TIMES DIV NOT DIFF
 %token DCOL SCOL COMMA LPAR RPAR LCUR RCUR LSQU RSQU
 %token <string> IDENT
 %token <int> INT
+%token <string> STRING
 %token EOF
 %start file
 %type <fun_decl list> file
@@ -33,6 +34,7 @@ expr:
   | f = IDENT LPAR x = separated_list(COMMA, expr) RPAR { Cal (f, x) }
   | e1 = expr o = op e2 = expr { Bop (o, e1, e2) }
   | NOT e = expr { Uop (Not, e) }
+  | s = STRING { Str s }
 ;
 
 stmt:
@@ -41,15 +43,17 @@ stmt:
   | IF e = expr LCUR s = stmt* RCUR { If (e, s, []) }
   | IF e = expr LCUR s1 = stmt* RCUR ELSE LCUR s2 = stmt* RCUR
       { If (e, s1, s2) }
-  | v = IDENT ASS e = expr { SAss (v, e) }
-  | v = IDENT LSQU e1 = expr RSQU ASS e2 = expr { AAss (v, e1, e2) }
+  | v = IDENT ASS e = expr SCOL { SAss (v, e) }
+  | v = IDENT LSQU e1 = expr RSQU ASS e2 = expr SCOL { AAss (v, e1, e2) }
   | RETURN e = expr SCOL { Ret e }
-  | f = IDENT LPAR x = separated_list(COMMA, expr) RPAR { Expr (Cal (f, x)) }
+  | f = IDENT LPAR x = separated_list(COMMA, expr) RPAR SCOL
+      { Expr (Cal (f, x)) }
 ;
 
 ty:
   | TINT { TInt }
   | FILE { TFile }
+  | UNIT { TUnit }
   | LSQU t = ty RSQU { TArr t }
 ;
 

@@ -22,6 +22,7 @@ let rec translate_expr fctx vctx =
       in
       Acc (n, e), t
     | Lit n -> Lit n, TInt
+    | Str s -> Str s, TArr (TInt)
     | Var v ->
       let t, n = SMap.find v vctx in
       Var n, t

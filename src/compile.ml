@@ -14,6 +14,9 @@ let free_reg fregs n =
   if fregs.(n) = 1 then
     fregs.(n) <- 0
 
+let load dst n =
+  [Op { op = "OP_LOADI" ; src1 = 0 ; src2 = 0 ; dst }; Lit n]
+
 let rec compile_expr fregs pc =
   let go x = compile_expr fregs pc x in function
   | Bop (Lt, e, e') -> go (Bop (Gt, e', e))
@@ -39,11 +42,25 @@ let rec compile_expr fregs pc =
   | Lit n ->
     let dst = new_reg fregs in
     pc := !pc + 2;
-    [Op { op = "OP_LOADI" ; src1 = 0 ; src2 = 0 ; dst }; Lit n], dst
+    load dst n, dst
   | Var src1 ->
     let dst = new_reg fregs in
     incr pc;
     [Op { op = "OP_MOVI" ; src1 ; src2 = 0 ; dst}], dst
+  | Str s ->
+    let r = new_reg fregs in
+    let i = new_reg fregs in
+    let dst = new_reg fregs in
+    let s = s |> String.to_seq |> List.of_seq in
+    free_reg fregs i;
+    free_reg fregs r;
+    load r (List.length s) @
+    [Op { op = "OP_AALLOC" ; src1 = r ; src2 = 0 ; dst}] @ (List.mapi
+       (fun j c ->
+          load r (Char.code c) @
+          load i j @
+          [Op { op = "OP_ASETI" ; src1 = i ; src2 = r ; dst }]) s
+     |> List.flatten), dst
   | Cal (f, x) ->
     let n = List.length x in
     let c, x = List.map (go) x |> List.split in

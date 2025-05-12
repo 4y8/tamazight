@@ -1,4 +1,4 @@
-type ty = TFile | TInt | TArr of ty
+type ty = TFile | TInt | TArr of ty | TUnit
 
 type uop = Not
 type bop = And | Or | Pls | Min | Mul | Div | Eq | Neq | Gt | Ge | Lt | Le
@@ -8,6 +8,7 @@ type 'a expr
   | Uop of uop * 'a expr
   | Acc of 'a * 'a expr
   | Lit of int
+  | Str of string
   | Var of 'a
   | Cal of 'a * 'a expr list
 
