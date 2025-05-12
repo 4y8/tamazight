@@ -1,9 +1,16 @@
 open Syntax
 
 let stdlib = Type.SMap.of_list
-    ["zeros", ([TInt], TArr (TInt), 0);
-     "print_string", ([TArr (TInt)], TUnit, 1)]
-let n_stdlib = 2
+    ["array_int", ([TInt], TArr TInt, 0);
+     "print_string", ([TArr TInt], TUnit, 1);
+     "len", ([TArr TAny], TInt, 2);
+     "open", ([TArr TInt], TFile, 3);
+     "close", ([TFile], TUnit, 4);
+     "list_dir", ([TFile], TArr (TArr TInt), 5);
+     "exec", ([TArr TInt], TUnit, 6);
+     "key_wait", ([], TInt, 7)]
+
+let n_stdlib = 8
 
 let read_file f =
   let ic = open_in f in

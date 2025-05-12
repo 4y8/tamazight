@@ -119,6 +119,8 @@ and compile_stmt fregs pc = function
     free_reg fregs src1;
     incr pc;
     ce @ [Op { op = "OP_RET" ; dst = 0 ; src1 ; src2 = 0}]
+  | Blk l ->
+    compile_blk fregs pc l
 
 let compile_program =
   List.map (fun b -> compile_blk (Array.make 256 0) (ref 0) b)

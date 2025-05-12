@@ -1,4 +1,4 @@
-type ty = TFile | TInt | TArr of ty | TUnit
+type ty = TFile | TInt | TArr of ty | TUnit | TAny
 
 type uop = Not
 type bop = And | Or | Pls | Min | Mul | Div | Eq | Neq | Gt | Ge | Lt | Le
@@ -20,6 +20,7 @@ type 'a stmt
   | AAss of 'a * 'a expr * 'a expr
   | SAss of 'a * 'a expr
   | Ret of 'a expr
+  | Blk of 'a stmt list
 
 type fun_decl =
   { f : string ; x : (string * ty) list ; ret : ty; body : string stmt list }

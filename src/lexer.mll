@@ -37,6 +37,8 @@ rule lexer = parse
 
   | "fun" { FUN }
   | "if" { IF }
+  | "for" { FOR }
+  | "in" { IN }
   | "else" { ELSE }
   | "while" { WHILE }
   | "return" { RETURN }
@@ -53,7 +55,7 @@ rule lexer = parse
   | digit+ as n { INT (int_of_string n) }
 
   | eof { EOF }
-  | _ as c { failwith (Printf.sprintf "unexpected char: %c" c) }
+  | _ as c { failwith (Printf.sprintf "unexpected char: %d" (Char.code c)) }
 
 {
 }

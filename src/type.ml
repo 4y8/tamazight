@@ -2,6 +2,11 @@ open Syntax
 
 module SMap = Map.Make(String)
 
+let rec subtype = function
+  | TArr t, TArr t' -> subtype (t, t')
+  | _, TAny -> true
+  | t, t' -> t = t'
+
 let rec translate_expr fctx vctx =
   let go x = translate_expr fctx vctx x in function
     | Bop (op, e, e') ->
@@ -29,7 +34,7 @@ let rec translate_expr fctx vctx =
     | Cal (f, x) ->
       let args, ret, n = SMap.find f fctx in
       let e, t = List.map go x |> List.split in
-      assert (t = args);
+      assert (List.for_all subtype @@ List.combine t args);
       Cal (n, e), ret
 
 let rec translate_blk ret n fctx vctx =
@@ -68,6 +73,8 @@ let rec translate_blk ret n fctx vctx =
       let e, t = translate_expr fctx vctx e in
       assert (t = ret);
       Ret e :: go tl
+    | Blk l :: tl ->
+      Blk (go l) :: go tl
 
 let translate_fun fctx { x ; ret ; body ; _ } =
   let n = List.length x in
