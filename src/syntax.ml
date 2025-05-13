@@ -1,4 +1,4 @@
-type ty = TFile | TInt | TArr of ty | TUnit | TAny
+type ty = TFile | TDir | TInt | TArr of ty | TUnit | TAny
 
 type uop = Not
 type bop = And | Or | Pls | Min | Mul | Div | Eq | Neq | Gt | Ge | Lt | Le

@@ -6,11 +6,13 @@ let stdlib = Type.SMap.of_list
      "len", ([TArr TAny], TInt, 2);
      "open", ([TArr TInt], TFile, 3);
      "close", ([TFile], TUnit, 4);
-     "list_dir", ([TFile], TArr (TArr TInt), 5);
+     "list_dir", ([TDir], TArr (TArr TInt), 5);
      "exec", ([TArr TInt], TUnit, 6);
-     "key_wait", ([], TInt, 7)]
+     "key_wait", ([], TInt, 7);
+     "open_dir", ([TArr TInt], TDir, 8);
+     "close_dir", ([TDir], TUnit, 9)]
 
-let n_stdlib = 8
+let n_stdlib = 10
 
 let read_file f =
   let ic = open_in f in

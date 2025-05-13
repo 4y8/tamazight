@@ -37,6 +37,7 @@ rule lexer = parse
 
   | "fun" { FUN }
   | "if" { IF }
+  | "elif" { ELIF }
   | "for" { FOR }
   | "in" { IN }
   | "else" { ELSE }
@@ -45,6 +46,7 @@ rule lexer = parse
   | "int" { TINT }
   | "file" { FILE }
   | "unit" { UNIT }
+  | "directory" { DIRECTORY }
   | ident as s { IDENT s }
 
   | "'" [^ '\\'] as c "'" { INT (Char.code c.[0]) }

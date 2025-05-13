@@ -6,7 +6,7 @@
     let new_var () = incr nvar; Printf.sprintf "x%d" !nvar
 %}
 
-%token FUN IF ELSE WHILE FOR IN RETURN TINT FILE UNIT 
+%token FUN IF ELIF ELSE WHILE FOR IN RETURN TINT FILE UNIT DIRECTORY
 %token WAL ASS EQ GT GE LT LE OR AND PLUS MINUS TIMES DIV NOT DIFF
 %token DCOL SCOL COMMA LPAR RPAR LCUR RCUR LSQU RSQU
 %token <string> IDENT
@@ -41,12 +41,17 @@ expr:
   | s = STRING { Str s }
 ;
 
+elif:
+  | ELIF e = expr LCUR s = stmt* RCUR { e, s }
+;
+
 stmt:
   | v = IDENT WAL e = expr SCOL { Decl (v, e) }
   | WHILE e = expr LCUR s = stmt* RCUR { While (e, s) }
-  | IF e = expr LCUR s = stmt* RCUR { If (e, s, []) }
-  | IF e = expr LCUR s1 = stmt* RCUR ELSE LCUR s2 = stmt* RCUR
-      { If (e, s1, s2) }
+  | IF e = expr LCUR s = stmt* RCUR f = elif*
+      { If (e, s, List.fold_right (fun (e, s) b -> [If (e, s, b)]) f []) }
+  | IF e = expr LCUR s1 = stmt* RCUR f = elif* ELSE LCUR s2 = stmt* RCUR
+      { If (e, s1, List.fold_right (fun (e, s) b -> [If (e, s, b)]) f s2) }
   | v = IDENT ASS e = expr SCOL { SAss (v, e) }
   | v = IDENT LSQU e1 = expr RSQU ASS e2 = expr SCOL { AAss (v, e1, e2) }
   | RETURN e = expr SCOL { Ret e }
@@ -68,6 +73,7 @@ ty:
   | FILE { TFile }
   | UNIT { TUnit }
   | LSQU t = ty RSQU { TArr t }
+  | DIRECTORY { TDir }
 ;
 
 formal: x = IDENT DCOL t = ty { (x, t) } ;
