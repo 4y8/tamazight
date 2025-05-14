@@ -10,6 +10,7 @@ rule lexer = parse
   | [' ' '\t' '\r' '\n'] { lexer lexbuf }
   | '#' [^'\n']* '\n' { lexer lexbuf }
   | "+" { PLUS }
+  | "++" { DPLUS }
   | "-" { MINUS }
   | "*" { TIMES }
   | "/" { DIV }
@@ -49,7 +50,7 @@ rule lexer = parse
   | "directory" { DIRECTORY }
   | ident as s { IDENT s }
 
-  | "'" [^ '\\'] as c "'" { INT (Char.code c.[0]) }
+  | "'" ([^ '\\'] as c) "'" { INT (Char.code c) }
   | "'\\n'" { INT (Char.code '\n') }
   | "'\\t'" { INT (Char.code '\t') }
   | "\"" ([^'\\''"']* as s) "\"" { STRING s }

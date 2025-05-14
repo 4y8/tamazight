@@ -7,7 +7,7 @@
 %}
 
 %token FUN IF ELIF ELSE WHILE FOR IN RETURN TINT FILE UNIT DIRECTORY
-%token WAL ASS EQ GT GE LT LE OR AND PLUS MINUS TIMES DIV NOT DIFF
+%token WAL ASS EQ GT GE LT LE OR AND PLUS DPLUS MINUS TIMES DIV NOT DIFF
 %token DCOL SCOL COMMA LPAR RPAR LCUR RCUR LSQU RSQU
 %token <string> IDENT
 %token <int> INT
@@ -19,7 +19,7 @@
 %left EQ DIFF
 %left LT LE GT GE
 %left OR AND
-%left PLUS MINUS
+%left PLUS MINUS DPLUS
 %left TIMES DIV
 %nonassoc NOT
 
@@ -28,7 +28,7 @@
 let op ==
     AND; { And } | OR; { Or } | PLUS; { Pls } | MINUS; { Min } | TIMES; { Mul }
   | DIV; { Div } | EQ; { Eq } | DIFF; { Neq } | GT; { Gt } | GE; { Ge }
-  | LT; { Lt } | LE; { Le }
+  | LT; { Lt } | LE; { Le } | DPLUS; { Apnd }
 
 expr:
   | LPAR e = expr RPAR { e }

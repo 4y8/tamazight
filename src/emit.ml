@@ -31,7 +31,7 @@ enum op {
 	OP_CJMP, OP_JMP,
 	OP_ASETI, OP_AGETI, OP_AALLOC, OP_ALEN,
 	OP_CALL,
-	OP_SYS
+	OP_SYS, OP_AAPPEND
 };
 
 enum syscall {

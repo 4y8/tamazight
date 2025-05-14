@@ -9,6 +9,11 @@ let rec subtype = function
 
 let rec translate_expr fctx vctx =
   let go x = translate_expr fctx vctx x in function
+    | Bop (Apnd, e, e') ->
+      let e, t = go e in
+      let e', t' = go e' in
+      assert (t = t' && subtype (t, TArr TAny));
+      Bop (Apnd, e, e'), t
     | Bop (op, e, e') ->
       let e, t = go e in
       let e', t' = go e' in

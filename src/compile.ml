@@ -23,9 +23,9 @@ let rec compile_expr fregs pc =
   | Bop (Le, e, e') -> go (Bop (Lt, e', e))
   | Bop (Neq, e, e') -> go (Uop (Not, Bop (Eq, e, e')))
   | Bop (op, e, e') ->
-    let assoc = [And, "OP_ANDI"; Or, "OP_ORI"; Pls, "OP_PLS"; Min, "OP_SUBI";
+    let assoc = [And, "OP_ANDI"; Or, "OP_ORI"; Pls, "OP_ADDI"; Min, "OP_SUBI";
                  Mul, "OP_MULI"; Div, "OP_DIVI"; Eq, "OP_EQUI"; Gt, "OP_GRTI";
-                 Ge, "OP_GRTEI"] in
+                 Ge, "OP_GRTEI"; Apnd, "OP_AAPPEND"] in
     let c1, src1 = go e in
     let c2, src2 = go e' in
     free_reg fregs src2;
@@ -52,6 +52,7 @@ let rec compile_expr fregs pc =
     let i = new_reg fregs in
     let dst = new_reg fregs in
     let s = s |> String.to_seq |> List.of_seq in
+    pc := !pc + 3 + 5 * List.length s;
     free_reg fregs i;
     free_reg fregs r;
     load r (List.length s) @
@@ -87,6 +88,7 @@ and compile_stmt fregs pc = function
     ([Op { op = "OP_CJMP" ; src1 ; src2 = 0 ; dst = 0 } ; Lit pc_true ] @ cb') @
     ([Op { op = "OP_JMP" ; src1 = 0 ; dst = 0 ; src2 = 0 } ; Lit pc_end] @ cb)
   | While (e, b) ->
+    Printf.printf "//ll %d\n" !pc;
     let pc_beg = !pc in
     let ce, src1 = compile_expr fregs pc (Uop (Not, e)) in
     pc := !pc + 2; (* leave room for a jump *)
@@ -123,4 +125,5 @@ and compile_stmt fregs pc = function
     compile_blk fregs pc l
 
 let compile_program =
-  List.map (fun b -> compile_blk (Array.make 256 0) (ref 0) b)
+  List.map (fun b -> compile_blk (Array.make 256 0) (ref 0) b @
+                     [Op { op = "OP_RET" ; dst = 0 ; src1 = 0; src2 = 0}])

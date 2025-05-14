@@ -1,7 +1,7 @@
 type ty = TFile | TDir | TInt | TArr of ty | TUnit | TAny
 
 type uop = Not
-type bop = And | Or | Pls | Min | Mul | Div | Eq | Neq | Gt | Ge | Lt | Le
+type bop = And | Or | Pls | Min | Mul | Div | Eq | Neq | Gt | Ge | Lt | Le | Apnd
 
 type 'a expr
   = Bop of bop * 'a expr * 'a expr
