@@ -4,15 +4,18 @@ let stdlib = Type.SMap.of_list
     ["array_int", ([TInt], TArr TInt, 0);
      "print_string", ([TArr TInt], TUnit, 1);
      "len", ([TArr TAny], TInt, 2);
-     "open", ([TArr TInt], TFile, 3);
-     "close", ([TFile], TUnit, 4);
+     "open_file", ([TArr TInt], TFile, 3);
+     "close_file", ([TFile], TUnit, 4);
      "list_dir", ([TDir], TArr (TArr TInt), 5);
      "exec", ([TArr TInt], TUnit, 6);
      "key_wait", ([], TInt, 7);
      "open_dir", ([TArr TInt], TDir, 8);
-     "close_dir", ([TDir], TUnit, 9)]
+     "close_dir", ([TDir], TUnit, 9);
+     "poweroff", ([], TUnit, 10);
+     "read_file", ([TFile], TArr TInt, 11);
+     "clear_screen", ([], TUnit, 12)]
 
-let n_stdlib = 10
+let n_stdlib = 13
 
 let read_file f =
   let ic = open_in f in
